@@ -15,7 +15,7 @@ beforeEach(async () => {
 
 const server = supertest(app);
 
-describe('GET /hotels', () => {
+describe('testes de get hotels', () => {
 
   it('should respond with status 401 when user token is invalid', async () => {
     const response = await server.get('/hotels');
