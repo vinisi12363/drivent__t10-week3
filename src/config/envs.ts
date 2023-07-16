@@ -12,3 +12,14 @@ export function loadEnv() {
   const currentEnvs = dotenv.config({ path });
   dotenvExpand.expand(currentEnvs);
 }
+
+//FIXME depois voltar ao que estava antes pra n dar problema no projeto .
+// export function loadEnv() {
+//   const path =
+//   process.env.NODE_ENV === 'development'
+//   ? '.env.development'
+//    : '.env';
+
+//   const currentEnvs = dotenv.config({ path });
+//   dotenvExpand.expand(currentEnvs);
+// }
