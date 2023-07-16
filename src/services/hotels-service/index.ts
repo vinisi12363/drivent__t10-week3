@@ -1,18 +1,34 @@
 import { Event } from '@prisma/client';
-import dayjs from 'dayjs';
 import { notFoundError } from '@/errors';
 import hotelsRepository from '@/repositories/hotels-repository';
 import { exclude } from '@/utils/prisma-utils';
+import enrollmentsService from '../enrollments-service';
+import ticketsRepository from '@/repositories/tickets-repository';
+import ticketService from '@/services/tickets-service';
 
-async function getAllHotels() {
+async function getAllHotelsById(userId:number) {
+  //validations 
+
+  const enrollment =  await enrollmentsService.getOneWithAddressByUserId(userId);
+  if(!enrollment) throw notFoundError();
+
+  const  ticket = await ticketService.getTicketByUserId(userId);
+  if(!ticket) throw notFoundError();
+
+  if(ticket.status !== 'PAID')  throw Error('No payment Effected');
+  
+
+
   const result = await hotelsRepository.findHotels();
-  console.log ("HOTELS",  result)
-  if (!result) throw notFoundError();
+
+  if (!result || !result[0] ) throw notFoundError();
 
   return result
 }
-async function getHotelByid(id:number){
-  const result = await hotelsRepository.findHotelById(id)
+
+
+async function getHotelByUserId(userId:number,hotelId:number){
+  const result = await hotelsRepository.findHotelById(hotelId)
   if (!result) throw notFoundError();
 
   return result
@@ -22,8 +38,8 @@ async function getHotelByid(id:number){
 
 
 const hotelsService = {
-  getAllHotels,
-  getHotelByid
+  getAllHotelsById,
+  getHotelByUserId
 };
 
 export default hotelsService;
