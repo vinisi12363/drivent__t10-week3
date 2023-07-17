@@ -39,7 +39,7 @@ async function getAllHotelsById(userId:number) {
 
   console.log("HOTELS" , result)
 
-  if (!result || !result[0] ) throw notFoundError();
+  if (!result || !result[0] || result.length === 0 ) throw notFoundError();
 
   return result
 }
@@ -55,11 +55,11 @@ async function getHotelByUserId(userId:number,hotelId:number){
   const userTicket = await ticketService.getTicketByUserId(userId);
   if (!userTicket) throw notFoundError();
 
-  if (userTicket.status !== 'PAID') throw requestError(402,'No payment Effected');;
+  if (userTicket.status === 'RESERVED') throw requestError(402,'Payment_Required');;
 
   const ticketsTypes = await ticketsRepository.findTicketByEnrollmentId(enrollment.id);
   if (ticketsTypes.TicketType.isRemote === true || ticketsTypes.TicketType.includesHotel === false) {
-    throw requestError(402,'No payment Effected');
+    throw requestError(402,'Payment_Required');
   }
  
 
