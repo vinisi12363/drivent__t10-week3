@@ -6,12 +6,10 @@ async function findHotels() {
 
 
 
-async function findHotelById(hotelId: number) {
-  return prisma.hotel.findFirst({
-    where: {
-      id:hotelId
-    }
-   
+async function findHotelById(id: number) {
+  return prisma.hotel.findUnique({
+    where: { id },
+    include: { Rooms: true }
   });
 }
 

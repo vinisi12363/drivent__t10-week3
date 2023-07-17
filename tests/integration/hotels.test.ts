@@ -7,7 +7,7 @@ import {
   createEnrollmentWithAddress,
   createTicket,
   createTicketType,
-  createCustomTicket,
+  createTicketTypePersonalized as createCustomTicket,
   createUser,
 } from '../factories';
 

@@ -24,7 +24,10 @@ async function getAllHotelsById(userId:number) {
     console.log("entrou no ticket reserved error ")
      throw requestError(402,'No payment Effected');}
   
-
+     const ticketsTypes = await ticketsRepository.findTicketByEnrollmentId(enrollment.id);
+    if (ticketsTypes.TicketType.isRemote === true || ticketsTypes.TicketType.includesHotel === false) {
+        throw Error('PaymentRequired');
+    }
 
   const result = await hotelsRepository.findHotels();
   console.log("HOTELS" , result)
@@ -36,10 +39,26 @@ async function getAllHotelsById(userId:number) {
 
 
 async function getHotelByUserId(userId:number,hotelId:number){
-  const result = await hotelsRepository.findHotelById(hotelId)
-  if (!result) throw notFoundError();
+  if (!hotelId) throw Error('BadRequest');
 
-  return result
+  const enrollment = await enrollmentsService.getOneWithAddressByUserId(userId);
+  if (!enrollment) throw  notFoundError();
+
+
+  const userTicket = await ticketService.getTicketByUserId(userId);
+  if (!userTicket) throw notFoundError();
+
+  if (userTicket.status !== 'PAID') throw requestError(402,'No payment Effected');;
+
+  const ticketsTypes = await ticketsRepository.findTicketByEnrollmentId(enrollment.id);
+  if (ticketsTypes.TicketType.isRemote === true || ticketsTypes.TicketType.includesHotel === false) {
+    throw requestError(402,'No payment Effected');
+  }
+
+  const hotels = await hotelsRepository.findHotelById(enrollment.id)
+  if (!hotels) throw Error('NotFound');
+
+  return hotels;
 
 }
 
