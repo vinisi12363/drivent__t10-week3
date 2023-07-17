@@ -12,7 +12,7 @@ import { AuthenticatedRequest } from '../middlewares';
       console.log('no controller', error.message)
       if (error.name === 'NotFoundError') {
           return res.sendStatus(httpStatus.NOT_FOUND);
-      } else if (error.status === 402) {
+        } else if (error.message === 'Payment_Required') {
           return res.sendStatus(httpStatus.PAYMENT_REQUIRED);
       } else {
           res.sendStatus(httpStatus.BAD_REQUEST);
@@ -34,9 +34,9 @@ async function getHotelsById(req: AuthenticatedRequest, res: Response) {
     return res.status(httpStatus.OK).send(event);
   } catch (error) {
     console.log('ERROR NO CONTROLLER', error)
-    if (error.message === 'NotFound') {
+    if (error.name === 'NotFoundError') {
         return res.sendStatus(httpStatus.NOT_FOUND);
-    } else if (error.message === 'PaymentRequired') {
+    } else if (error.message === 'Payment_Required') {
         return res.sendStatus(httpStatus.PAYMENT_REQUIRED);
     } else {
         res.sendStatus(httpStatus.BAD_REQUEST);

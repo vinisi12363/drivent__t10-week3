@@ -14,7 +14,7 @@ async function getAllHotelsById(userId:number) {
   console.log('enrollments', enrollment)
   if(!enrollment || enrollment === null) throw notFoundError();
 
-  const  ticket = await ticketsRepository.findTickeyById(userId)
+  const  ticket = await ticketsRepository.findTicketByEnrollmentId(enrollment.id)
   console.log('ticket', ticket)
   if(!ticket || ticket === null){
     
@@ -22,11 +22,13 @@ async function getAllHotelsById(userId:number) {
   } 
   if(ticket.status === 'RESERVED') {
     console.log("entrou no ticket reserved error ")
-     throw requestError(402,'No payment Effected');}
+     throw Error('Payment_Required')
+    
+    }
   
      const ticketsTypes = await ticketsRepository.findTicketByEnrollmentId(enrollment.id);
-    if (ticketsTypes.TicketType.isRemote === true || ticketsTypes.TicketType.includesHotel === false) {
-        throw Error('PaymentRequired');
+    if (ticketsTypes.TicketType.isRemote === true || !ticketsTypes.TicketType.includesHotel) {
+        throw Error('Payment_Required');
     }
 
   const result = await hotelsRepository.findHotels();
