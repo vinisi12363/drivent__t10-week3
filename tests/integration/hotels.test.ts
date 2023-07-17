@@ -71,12 +71,12 @@ describe('testes de get hotels', () => {
         expect(response.status).toEqual(httpStatus.PAYMENT_REQUIRED);
     });
 
-    it('deve responder com status 402 quando o bilhete não inclui hotel', async () => {
+   it('deve responder com status 402 quando o bilhete não inclui hotel', async () => {
         const user = await createUser();
         const token = await generateValidToken(user);
         const enrollment = await createEnrollmentWithAddress(user);
         const ticketType = await createCustomTicket(true, false);
-        await createTicket(enrollment.id, ticketType.id, 'PAID');
+        await createTicket(enrollment.id, ticketType.id, 'RESERVED');
 
         const response = await api.get('/hotels').set('Authorization', `Bearer ${token}`);
 

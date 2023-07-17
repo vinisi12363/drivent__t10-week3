@@ -27,11 +27,14 @@ async function getAllHotelsById(userId:number) {
     }
   
      const ticketsTypes = await ticketsRepository.findTicketByEnrollmentId(enrollment.id);
-    if (ticketsTypes.TicketType.isRemote === true || !ticketsTypes.TicketType.includesHotel) {
+     console.log("TICKETYPE", ticketsTypes)
+    if (ticketsTypes.TicketType.isRemote === true) {
         throw Error('Payment_Required');
     }
+    if(!ticketsTypes.TicketType.includesHotel) throw Error('Payment_Required');
 
   const result = await hotelsRepository.findHotels();
+
   console.log("HOTELS" , result)
 
   if (!result || !result[0] ) throw notFoundError();
@@ -56,10 +59,11 @@ async function getHotelByUserId(userId:number,hotelId:number){
   if (ticketsTypes.TicketType.isRemote === true || ticketsTypes.TicketType.includesHotel === false) {
     throw requestError(402,'No payment Effected');
   }
+  console.log("ticketTypes", ticketsTypes)
 
   const hotels = await hotelsRepository.findHotelById(enrollment.id)
   if (!hotels) throw Error('NotFound');
-
+ console.log ('HOTELS', hotels)
   return hotels;
 
 }
