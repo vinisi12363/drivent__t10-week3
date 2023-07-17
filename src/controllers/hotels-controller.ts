@@ -9,7 +9,6 @@ import { AuthenticatedRequest } from '../middlewares';
       const event = await hotelsService.getAllHotelsById(req.userId)
       return res.status(httpStatus.OK).send(event);
     } catch (error) {
-      console.log('no controller', error.message)
       if (error.name === 'NotFoundError') {
           return res.sendStatus(httpStatus.NOT_FOUND);
         } else if (error.message === 'Payment_Required') {
@@ -33,7 +32,7 @@ async function getHotelsById(req: AuthenticatedRequest, res: Response) {
     const event = await hotelsService.getHotelByUserId(req.userId, hotelId)
     return res.status(httpStatus.OK).send(event);
   } catch (error) {
-    console.log('ERROR NO CONTROLLER', error)
+    
     if (error.name === 'NotFoundError') {
         return res.sendStatus(httpStatus.NOT_FOUND);
     } else if (error.message === 'Payment_Required') {
@@ -43,8 +42,6 @@ async function getHotelsById(req: AuthenticatedRequest, res: Response) {
     }
   }
 } 
-
-
 
 export {
   getHotels,

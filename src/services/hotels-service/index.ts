@@ -8,14 +8,14 @@ import ticketService from '@/services/tickets-service';
 
 async function getAllHotelsById(userId:number) {
   //validations 
-  console.log('iniciando checagens')
+  
 
   const enrollment =  await enrollmentsService.getOneWithAddressByUserId(userId);
-  console.log('enrollments', enrollment)
+  
   if(!enrollment || enrollment === null) throw notFoundError();
 
   const  ticket = await ticketsRepository.findTicketByEnrollmentId(enrollment.id)
-  console.log('ticket', ticket)
+  console.log('TICKET', ticket)
   if(!ticket || ticket === null){
     
     throw notFoundError();
@@ -32,7 +32,9 @@ async function getAllHotelsById(userId:number) {
         throw Error('Payment_Required');
     }
     if(!ticketsTypes.TicketType.includesHotel) throw Error('Payment_Required');
-
+    
+    
+  console.log("ticketTypes", ticketsTypes)
   const result = await hotelsRepository.findHotels();
 
   console.log("HOTELS" , result)
@@ -59,12 +61,12 @@ async function getHotelByUserId(userId:number,hotelId:number){
   if (ticketsTypes.TicketType.isRemote === true || ticketsTypes.TicketType.includesHotel === false) {
     throw requestError(402,'No payment Effected');
   }
-  console.log("ticketTypes", ticketsTypes)
+ 
 
-  const hotels = await hotelsRepository.findHotelById(enrollment.id)
-  if (!hotels) throw Error('NotFound');
- console.log ('HOTELS', hotels)
-  return hotels;
+  const result = await hotelsRepository.findHotelById(enrollment.id)
+  if (!result) throw Error('NotFound');
+ console.log ('HOTELS', result)
+  return result;
 
 }
 
