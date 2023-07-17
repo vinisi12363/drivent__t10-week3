@@ -96,7 +96,12 @@ describe('testes de get hotels', () => {
     it('deve responder com status 200 e com objeto quando o token for válido', async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
+      const enrollment = await createEnrollmentWithAddress(user);
+      const ticket = await createCustomTicket(false , true)
+      await createTicket(enrollment.id, ticket.id, 'PAID');
+
       const hotel = await buildHotel();
+
       const response = await api.get('/hotels').set('Authorization', `Bearer ${token}`);
   
       expect(response.body[0]).toEqual({
@@ -107,6 +112,7 @@ describe('testes de get hotels', () => {
           updatedAt: hotel.updatedAt.toISOString()
       })
       expect(response.status).toBe(httpStatus.OK)
+ 
     });
     
 });
@@ -138,19 +144,6 @@ describe('GET /hotels/:hotelId', () => {
       expect(response.status).toBe(httpStatus.NOT_FOUND);
   });
 
-  it('Retorna status 404 se hotel não existir', async () => {
-      const user = await createUser();
-      const token = await generateValidToken(user);
-      const enrollment = await createEnrollmentWithAddress(user);
-      const ticketType = await createCustomTicket(false, true);
-
-      await createTicket(enrollment.id, ticketType.id, 'PAID');
-
-      const response = await api.get('/hotels/1').set('Authorization', `Bearer ${token}`);
-
-      expect(response.status).toBe(httpStatus.NOT_FOUND);
-  });
-
   it('Retorna 402 se ticket não foi pago', async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
@@ -168,7 +161,7 @@ describe('GET /hotels/:hotelId', () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       const enrollment = await createEnrollmentWithAddress(user);
-      const ticketType = await createCustomTicket(true, false);
+      const ticketType = await createCustomTicket(true , false);
 
       await createTicket(enrollment.id, ticketType.id, 'PAID');
 

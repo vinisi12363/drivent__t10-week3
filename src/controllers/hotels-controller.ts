@@ -34,12 +34,12 @@ async function getHotelsById(req: AuthenticatedRequest, res: Response) {
   } catch (error) {
     
     if (error.name === 'NotFoundError') {
-        return res.sendStatus(httpStatus.NOT_FOUND);
+      return res.sendStatus(httpStatus.NOT_FOUND);
     } else if (error.message === 'Payment_Required') {
-        return res.sendStatus(httpStatus.PAYMENT_REQUIRED);
-    } else {
-        res.sendStatus(httpStatus.BAD_REQUEST);
-    }
+      return res.sendStatus(httpStatus.PAYMENT_REQUIRED);
+  } else {
+      res.sendStatus(httpStatus.BAD_REQUEST);
+  }
   }
 } 
 
