@@ -28,20 +28,7 @@ describe('testes de get hotels', () => {
         const response = await server.get('/hotels');
         expect(response.status).toBe(httpStatus.UNAUTHORIZED);
       });
-      it('should respond with status 200 when token is valid', async () => {
-        const token = await generateValidToken()
-        const hotel = await createHotel();
-        const response = await server.get('/hotels').set('Authorization', `Bearer ${token}`);
-  
-        expect(response.body[0]).toEqual({
-            id: hotel.id,
-            name: hotel.name,
-            image: hotel.image,
-            createdAt: hotel.createdAt.toISOString(),
-            updatedAt: hotel.updatedAt.toISOString()
-        })
-        expect(response.status).toBe(200)
-      });
+    
     
       it('should respond with status 404 when no exist enrollment yet', async () => {
         const user = await createUser();
@@ -106,7 +93,20 @@ describe('testes de get hotels', () => {
 
         expect(response.status).toEqual(httpStatus.NOT_FOUND);
     });
+    it('should respond with status 200 when token is valid', async () => {
+      const token = await generateValidToken()
+      const hotel = await createHotel();
+      const response = await server.get('/hotels').set('Authorization', `Bearer ${token}`);
 
+      expect(response.body[0]).toEqual({
+          id: hotel.id,
+          name: hotel.name,
+          image: hotel.image,
+          createdAt: hotel.createdAt.toISOString(),
+          updatedAt: hotel.updatedAt.toISOString()
+      })
+      expect(response.status).toBe(200)
+    });
     
 });
 

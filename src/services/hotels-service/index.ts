@@ -1,5 +1,5 @@
 import { Event } from '@prisma/client';
-import { notFoundError } from '@/errors';
+import { notFoundError, requestError } from '@/errors';
 import hotelsRepository from '@/repositories/hotels-repository';
 import { exclude } from '@/utils/prisma-utils';
 import enrollmentsService from '../enrollments-service';
@@ -12,14 +12,17 @@ async function getAllHotelsById(userId:number) {
 
   const enrollment =  await enrollmentsService.getOneWithAddressByUserId(userId);
   console.log('enrollments', enrollment)
-  if(!enrollment) throw notFoundError();
+  if(!enrollment || enrollment === null) throw notFoundError();
 
-  console.log('enrollments', enrollment)
-
-  const  ticket = await ticketService.getTicketByUserId(userId);
+  const  ticket = await ticketsRepository.findTickeyById(userId)
   console.log('ticket', ticket)
-  if(!ticket) throw notFoundError();
-  if(ticket.status !== 'PAID')  throw Error('No payment Effected');
+  if(!ticket || ticket === null){
+    
+    throw notFoundError();
+  } 
+  if(ticket.status === 'RESERVED') {
+    console.log("entrou no ticket reserved error ")
+     throw requestError(402,'No payment Effected');}
   
 
 
